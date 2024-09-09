@@ -131,4 +131,7 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+<<<<<<< HEAD
 >>>>>>> 1d783f6 (Add ci workflow)
+=======
+>>>>>>> 9d64e71 (Add ci workflow)
