@@ -12,5 +12,9 @@ describe('Example Test', () => {
   it('should pass', () => {
     expect(3 + 3).toBe(6);
   });
+
+  it('should pass', () => {
+    expect(3 + 3).toBe(6);
+  });
 });
 
