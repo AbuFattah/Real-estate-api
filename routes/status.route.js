@@ -10,6 +10,6 @@ export const status = async (req, res) => {
 
 const router = express.Router();
 
-router.post("/", status);
+router.get("/", status);
 
 export default router;
