@@ -37,6 +37,15 @@ jobs:
           file: ./Dockerfile.production
           push: true
           tags: ${{ env.DOCKERHUB_USERNAME }}/real-estate-backend:latest
+
+      - name: Copy docker-compose and nginx files to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ env.INSTANCE_IP }}
+          username: ec2-user
+          key: ${{ secrets.RSA_KEY_EC2 }}
+          source: "docker-compose.yml,./nginx/"
+          target: "~/"
       
       - name: SSH into VM and deploy Docker Image
         uses: appleboy/ssh-action@master
@@ -44,8 +53,6 @@ jobs:
           host: ${{ env.INSTANCE_IP }}
           username: ec2-user
           key: ${{ secrets.RSA_KEY_EC2 }}
-          script: |            
-            docker pull ${{ env.DOCKERHUB_USERNAME }}/real-estate-backend:latest
-            docker stop backend || true
-            docker rm backend || true
-            docker run -d -p 4444:8800 -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" -e DATABASE_URL="${{ secrets.DATABASE_URL }}" -e NODE_ENV=production --name backend ${{ env.DOCKERHUB_USERNAME }}/real-estate-backend:latest
+          script: |
+            DOCKERHUB_USERNAME=${{ env.DOCKERHUB_USERNAME }} JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" DATABASE_URL="${{ secrets.DATABASE_URL }}" NODE_ENV=production docker compose up --pull -d
+            docker image prune -f
